@@ -14,8 +14,7 @@ module DictTree
         , foldr
         , foldl
         , length
-        , insertChild
-        , appendChild
+        , addChild
         , sortBy
         , sortWith
         )
@@ -28,7 +27,7 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children, foldl, foldr, flatten, tuplesOfDatumAndFlatChildren, filter, filterWithChildPrecedence, length, insertChild, appendChild
+@docs datum, children, foldl, foldr, flatten, tuplesOfDatumAndFlatChildren, filter, filterWithChildPrecedence, length, addChild
 
 # Mapping
 @docs map, mapListOverTree, indexedMap
@@ -64,17 +63,10 @@ children (Tree datum children) =
     children
 
 
-{-| Inserts a Tree as the first child of a Tree
+{-| Inserts a Tree as one child of a Tree
 -}
-insertChild : Tree a -> Tree a -> Tree a
-insertChild childTree (Tree datum children) =
-    Tree datum (childTree :: children)
-
-
-{-| Inserts a Tree as the last child of a Tree
--}
-appendChild : Tree a -> Tree a -> Tree a
-appendChild childTree (Tree datum children) =
+addChild : Tree a -> Tree a -> Tree a
+addChild childTree (Tree datum children) =
     Tree datum (children ++ [ childTree ])
 
 

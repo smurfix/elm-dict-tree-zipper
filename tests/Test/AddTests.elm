@@ -1,4 +1,4 @@
-module Test.InsertTests exposing (..)
+module Test.AddTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..))
@@ -17,22 +17,23 @@ import Test.Utils exposing (..)
 
 tests : Test
 tests =
-    suite "Insert"
-        [ test "Inserting children can turn a multiChildTree into an interestingTree" <|
+    suite "Add"
+        [ test "adding children can turn a multiChildTree into an interestingTree" <|
             assertEqual (Just ( interestingTree, [] ))
                 (Just ( multiChildTree, [] )
+                    &> goToChild
+                        0
+                    &> addChild (Tree "e" [])
                     &> goToChild 0
-                    &> insertChild (Tree "e" [])
-                    &> goToChild 0
-                    &> insertChild (Tree "k" [])
+                    &> addChild (Tree "k" [])
                     &> goUp
                     &> goRight
-                    &> insertChild (Tree "g" [])
-                    &> insertChild (Tree "f" [])
+                    &> addChild (Tree "f" [])
+                    &> addChild (Tree "g" [])
                     &> goRight
-                    &> insertChild (Tree "j" [])
-                    &> insertChild (Tree "i" [])
-                    &> insertChild (Tree "h" [])
+                    &> addChild (Tree "h" [])
+                    &> addChild (Tree "i" [])
+                    &> addChild (Tree "j" [])
                     &> goToRoot
                 )
         ]

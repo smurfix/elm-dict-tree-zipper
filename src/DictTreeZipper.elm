@@ -16,8 +16,7 @@ module DictTreeZipper
         , replaceDatum
         , datum
         , maybeDatum
-        , insertChild
-        , appendChild
+        , addChild
         , updateChildren
         )
 
@@ -32,7 +31,7 @@ Zipper fashion.
 @docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
 
 # Update API
-@docs updateDatum, replaceDatum, insertChild, appendChild, updateChildren
+@docs updateDatum, replaceDatum, addChild, updateChildren
 
 # Access API
 @docs datum, maybeDatum
@@ -52,7 +51,7 @@ Wanted the first version to be self contained.
 
 import List
 import Maybe exposing (Maybe(..))
-import DictTree exposing (Tree(..), Forest, children, insertChild, appendChild)
+import DictTree exposing (Tree(..), Forest, children, addChild)
 
 
 {-| The necessary information needed to reconstruct a DictTree as it is
@@ -444,18 +443,11 @@ updateChildren newChildren ( Tree datum children, breadcrumbs ) =
     Just ( Tree datum newChildren, breadcrumbs )
 
 
-{-| Inserts a Tree as the first child of the Tree at the current focus. Does not move the focus.
+{-| Inserts a Tree as a new child of the Tree at the current focus. Does not move the focus.
 -}
-insertChild : Tree a -> Zipper a -> Maybe (Zipper a)
-insertChild child ( tree, breadcrumbs ) =
-    Just ( DictTree.insertChild child tree, breadcrumbs )
-
-
-{-| Inserts a Tree as the last child of the Tree at the current focus. Does not move the focus.
--}
-appendChild : Tree a -> Zipper a -> Maybe (Zipper a)
-appendChild child ( tree, breadcrumbs ) =
-    Just ( DictTree.appendChild child tree, breadcrumbs )
+addChild : Tree a -> Zipper a -> Maybe (Zipper a)
+addChild child ( tree, breadcrumbs ) =
+    Just ( DictTree.addChild child tree, breadcrumbs )
 
 
 {-| Access the datum at the current Zipper focus.
