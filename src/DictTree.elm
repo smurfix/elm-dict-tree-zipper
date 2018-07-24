@@ -1,4 +1,4 @@
-module MultiwayTree
+module DictTree
     exposing
         ( Tree(..)
         , Forest
@@ -123,14 +123,14 @@ tuplesOfDatumAndFlatChildren (Tree datum children) =
 
 
 {-| Return the length of the Tree. Calculated recusively as datum (1) + length of children (n)
-    Since a MultiwayTree is never empty this function will never return Int < 1.
+    Since a DictTree is never empty this function will never return Int < 1.
 -}
 length : Tree a -> Int
 length tree =
     foldr (\_ accu -> accu + 1) 0 tree
 
 
-{-| Map over the MultiwayTree
+{-| Map over the DictTree
 -}
 map : (a -> b) -> Tree a -> Tree b
 map fn (Tree datum children) =
@@ -144,7 +144,7 @@ map fn (Tree datum children) =
         (Tree mappedDatum mappedChildren)
 
 
-{-| Map a Function over a List and a MultiwayTree.
+{-| Map a Function over a List and a DictTree.
 -}
 mapListOverTree : (a -> b -> result) -> List a -> Tree b -> Maybe (Tree result)
 mapListOverTree fn list (Tree datum children) =
@@ -201,7 +201,7 @@ indexedMap f tree =
     mapListOverTree f (List.range 0 (length tree - 1)) tree
 
 
-{-| Filter the MultiwayTree. Keep only elements whose datum satisfy the predicate.
+{-| Filter the DictTree. Keep only elements whose datum satisfy the predicate.
 -}
 filter : (a -> Bool) -> Tree a -> Maybe (Tree a)
 filter predicate (Tree datum children) =
@@ -211,7 +211,7 @@ filter predicate (Tree datum children) =
         Nothing
 
 
-{-| Filter the MultiwayTree. If the predicate is True for a Child the entire path to the root will be part of the result Tree.
+{-| Filter the DictTree. If the predicate is True for a Child the entire path to the root will be part of the result Tree.
 -}
 filterWithChildPrecedence : (a -> Bool) -> Tree a -> Maybe (Tree a)
 filterWithChildPrecedence predicate (Tree datum children) =

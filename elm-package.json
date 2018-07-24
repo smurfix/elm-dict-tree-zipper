@@ -1,15 +1,15 @@
 {
     "version": "1.10.2",
     "summary": "A library for navigating and updating immutable trees.",
-    "repository": "https://github.com/tomjkidd/elm-multiway-tree-zipper.git",
+    "repository": "https://github.com/smurfix/elm-dict-tree-zipper.git",
     "license": "BSD3",
     "source-directories": [
         ".",
         "./src"
     ],
     "exposed-modules": [
-        "MultiwayTree",
-        "MultiwayTreeZipper"
+        "DictTree",
+        "DictTreeZipper"
     ],
     "dependencies": {
         "elm-lang/core": "5.0.0 <= v < 6.0.0"

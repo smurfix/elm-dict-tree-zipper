@@ -1,15 +1,11 @@
-# MultiwayTreeZipper
+# DictTreeZipper
 
-This library was created with the goal of allowing a multiway tree to be
+This library was created with the goal of allowing a dict-based tree to be
 navigated and updated.
 
-I ran into the problem when designing a tree UI control to use with The Elm
-Architecture. I realized that to keep track of the state in the model for things
-like whether a node is selected or expanded, I needed a way to update specific
-nodes through actions.
-
-There will be more examples to come, but this is meant as a library to solve a
-piece of the puzzle, which will be used with others to create a Tree UI control
+This is a mod of MultiWayTreeZipper, except that the keys to access
+an individual node are lists of paths instead of a key that's searched in
+the whole tree -- that doesn't scale.
 
 # Run tests (from a cloned repo)
     npm install -g elm

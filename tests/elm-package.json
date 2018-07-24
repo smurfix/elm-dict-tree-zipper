@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
-    "summary": "Tests for elm-multiway-tree-zipper",
-    "repository": "https://github.com/tomjkidd/elm-multiway-tree-zipper.git",
+    "summary": "Tests for elm-dict-tree-zipper",
+    "repository": "https://github.com/smurfix/elm-dict-tree-zipper.git",
     "license": "BSD3",
     "source-directories": [
         ".",

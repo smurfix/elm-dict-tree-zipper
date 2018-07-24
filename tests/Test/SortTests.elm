@@ -1,7 +1,7 @@
 module Test.SortTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import MultiwayTree exposing (Tree(..))
+import DictTree exposing (Tree(..))
 import Test.SampleData
     exposing
         ( noChildTree
@@ -69,14 +69,14 @@ tests =
     suite "Sort"
         [ test "Sorting a Tree with only one child per levels yields the same Tree" <|
             assertEqual deepTree
-                (MultiwayTree.sortBy identity deepTree)
+                (DictTree.sortBy identity deepTree)
         , test "Sorting a sorted Tree returns the same Tree" <|
             assertEqual interestingTree
-                (MultiwayTree.sortBy identity interestingTree)
+                (DictTree.sortBy identity interestingTree)
         , test "Sorting an unsorted Tree returns a sorted Tree" <|
             assertEqual interestingTree
-                (MultiwayTree.sortBy identity unorderedTree)
+                (DictTree.sortBy identity unorderedTree)
         , test "Sorting with a Tree with a reversed comperator reverse-sorts a Tree" <|
             assertEqual reverseSortedTree
-                (MultiwayTree.sortWith flippedComparison interestingTree)
+                (DictTree.sortWith flippedComparison interestingTree)
         ]

@@ -1,8 +1,8 @@
 module Test.LengthTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import MultiwayTree exposing (Tree(..))
-import MultiwayTreeZipper exposing (..)
+import DictTree exposing (Tree(..))
+import DictTreeZipper exposing (..)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -19,14 +19,14 @@ tests =
     suite "Length"
         [ test "Length of an interesting Tree" <|
             assertEqual 11
-                (MultiwayTree.length interestingTree)
+                (DictTree.length interestingTree)
         , test "Length of a noChildTree" <|
             assertEqual 1
-                (MultiwayTree.length noChildTree)
+                (DictTree.length noChildTree)
         , test "Length of a deepTree" <|
             assertEqual 4
-                (MultiwayTree.length deepTree)
+                (DictTree.length deepTree)
         , test "Length of a Tree is equal to length of a flattened tree" <|
-            assertEqual (List.length (MultiwayTree.flatten interestingTree))
-                (MultiwayTree.length interestingTree)
+            assertEqual (List.length (DictTree.flatten interestingTree))
+                (DictTree.length interestingTree)
         ]

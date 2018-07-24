@@ -1,6 +1,6 @@
 module Test.SampleData exposing (..)
 
-import MultiwayTree exposing (Tree(..), Forest)
+import DictTree exposing (Tree(..), Forest)
 
 
 interestingTree : Tree String

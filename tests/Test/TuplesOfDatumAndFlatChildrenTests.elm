@@ -1,8 +1,8 @@
 module Test.TuplesOfDatumAndFlatChildrenTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import MultiwayTree exposing (Tree(..))
-import MultiwayTreeZipper exposing (..)
+import DictTree exposing (Tree(..))
+import DictTreeZipper exposing (..)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -19,10 +19,10 @@ tests =
     suite "TuplesOfDatumAndFlatChildren"
         [ test "TuplesOfDatumAndFlatChildren multiChildTree" <|
             assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
-                (MultiwayTree.tuplesOfDatumAndFlatChildren multiChildTree)
+                (DictTree.tuplesOfDatumAndFlatChildren multiChildTree)
         , test "TuplesOfDatumAndFlatChildren deepTree" <|
             assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [ "c", "d" ] ), ( "c", [ "d" ] ), ( "d", [] ) ]
-                (MultiwayTree.tuplesOfDatumAndFlatChildren deepTree)
+                (DictTree.tuplesOfDatumAndFlatChildren deepTree)
         , test "TuplesOfDatumAndFlatChildren interestingTree" <|
             assertEqual
                 [ ( "a", [ "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ] )
@@ -37,5 +37,5 @@ tests =
                 , ( "i", [] )
                 , ( "j", [] )
                 ]
-                (MultiwayTree.tuplesOfDatumAndFlatChildren interestingTree)
+                (DictTree.tuplesOfDatumAndFlatChildren interestingTree)
         ]

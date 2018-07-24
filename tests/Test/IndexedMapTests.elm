@@ -1,8 +1,8 @@
 module Test.IndexedMapTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import MultiwayTree exposing (Tree(..))
-import MultiwayTreeZipper exposing (..)
+import DictTree exposing (Tree(..))
+import DictTreeZipper exposing (..)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -19,9 +19,9 @@ tests =
     suite "IndexedMap"
         [ test "Maps a function with index over the Tree, transforms Tree" <|
             assertEqual (List.range 0 10)
-                (case MultiwayTree.indexedMap (\index c -> index) interestingTree of
+                (case DictTree.indexedMap (\index c -> index) interestingTree of
                     Just tree ->
-                        (MultiwayTree.flatten tree)
+                        (DictTree.flatten tree)
 
                     Nothing ->
                         []

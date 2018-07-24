@@ -1,4 +1,4 @@
-module MultiwayTreeZipper
+module DictTreeZipper
     exposing
         ( Context(..)
         , Breadcrumbs
@@ -52,10 +52,10 @@ Wanted the first version to be self contained.
 
 import List
 import Maybe exposing (Maybe(..))
-import MultiwayTree exposing (Tree(..), Forest, children, insertChild, appendChild)
+import DictTree exposing (Tree(..), Forest, children, insertChild, appendChild)
 
 
-{-| The necessary information needed to reconstruct a MultiwayTree as it is
+{-| The necessary information needed to reconstruct a DictTree as it is
 navigated with a Zipper. This context includes the datum that was at the
 previous node, a list of children that came before the node, and a list of
 children that came after the node.
@@ -64,7 +64,7 @@ type Context a
     = Context a (List (Tree a)) (List (Tree a))
 
 
-{-| A list of Contexts that is contructed as a MultiwayTree is navigated.
+{-| A list of Contexts that is contructed as a DictTree is navigated.
 Breadcrumbs are used to retain information about parts of the tree that move out
 of focus. As the tree is navigated, the needed Context is pushed onto the list
 Breadcrumbs, and they are maintained in the reverse order in which they are
@@ -81,7 +81,7 @@ type alias Zipper a =
     ( Tree a, Breadcrumbs a )
 
 
-{-| Separate a list into three groups. This function is unique to MultiwayTree
+{-| Separate a list into three groups. This function is unique to DictTree
 needs. In order to navigate to children of any Tree, a way to break the children
 into pieces is needed.
 
@@ -448,21 +448,21 @@ updateChildren newChildren ( Tree datum children, breadcrumbs ) =
 -}
 insertChild : Tree a -> Zipper a -> Maybe (Zipper a)
 insertChild child ( tree, breadcrumbs ) =
-    Just ( MultiwayTree.insertChild child tree, breadcrumbs )
+    Just ( DictTree.insertChild child tree, breadcrumbs )
 
 
 {-| Inserts a Tree as the last child of the Tree at the current focus. Does not move the focus.
 -}
 appendChild : Tree a -> Zipper a -> Maybe (Zipper a)
 appendChild child ( tree, breadcrumbs ) =
-    Just ( MultiwayTree.appendChild child tree, breadcrumbs )
+    Just ( DictTree.appendChild child tree, breadcrumbs )
 
 
 {-| Access the datum at the current Zipper focus.
 -}
 datum : Zipper a -> a
 datum ( tree, breadcrumbs ) =
-    MultiwayTree.datum tree
+    DictTree.datum tree
 
 
 {-| Access the datum at the current Zipper focus as a Maybe.

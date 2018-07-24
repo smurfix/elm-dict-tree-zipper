@@ -1,4 +1,4 @@
-module Test.MultiwayTreeZipper exposing (tests)
+module Test.DictTreeZipper exposing (tests)
 
 import Legacy.ElmTest as ElmTest exposing (..)
 import Test.NavigationTests
@@ -17,7 +17,7 @@ import Test.SortTests
 
 tests : Test
 tests =
-    suite "MultiwayTreeZipper"
+    suite "DictTreeZipper"
         [ Test.NavigationTests.tests
         , Test.UpdateTests.tests
         , Test.FlattenTests.tests

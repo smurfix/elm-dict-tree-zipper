@@ -1,8 +1,8 @@
 module Test.FlattenTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import MultiwayTree exposing (Tree(..))
-import MultiwayTreeZipper exposing (..)
+import DictTree exposing (Tree(..))
+import DictTreeZipper exposing (..)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -19,11 +19,11 @@ tests =
     suite "Flatten"
         [ test "Flatten multiChildTree"
             <| assertEqual [ "a", "b", "c", "d" ]
-                (MultiwayTree.flatten multiChildTree)
+                (DictTree.flatten multiChildTree)
         , test "Flatten deepTree"
             <| assertEqual [ "a", "b", "c", "d" ]
-                (MultiwayTree.flatten deepTree)
+                (DictTree.flatten deepTree)
         , test "Flatten interestingTree"
             <| assertEqual [ "a", "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ]
-                (MultiwayTree.flatten interestingTree)
+                (DictTree.flatten interestingTree)
         ]
