@@ -1,59 +1,70 @@
 module Test.SampleData exposing (..)
 
+import Dict exposing (Dict(..))
 import DictTree exposing (Tree(..), Forest)
 
+import Test.Utils exposing (..)
 
-interestingTree : Tree String
+interestingTree : Tree String String
 interestingTree =
-    Tree "a"
-        [ Tree "b"
-            [ Tree "e"
-                [ Tree "k" [] ]
+    asTree "a"
+        [ asTree "b"
+            [ asTree "e"
+                [ asTree "k" [] ]
             ]
-        , Tree "c"
-            [ Tree "f" []
-            , Tree "g" []
+        , asTree "c"
+            [ asTree "f" []
+            , asTree "g" []
             ]
-        , Tree "d"
-            [ Tree "h" []
-            , Tree "i" []
-            , Tree "j" []
+        , asTree "d"
+            [ asTree "h" []
+            , asTree "i" []
+            , asTree "j" []
             ]
         ]
 
 
 noChildTree =
-    Tree "a" []
+    asTree "a" []
 
 
 noChildRecord =
-    Tree { selected = False, expanded = False } []
+    Tree { selected = False, expanded = False } Dict.empty
 
 
 singleChildTree =
-    Tree "a"
-        [ Tree "b" [] ]
+    asTree "a"
+        [ asTree "b" [] ]
 
 
 multiChildTree =
-    Tree "a"
-        [ Tree "b" []
-        , Tree "c" []
-        , Tree "d" []
+    asTree "a"
+        [ asTree "b" []
+        , asTree "c" []
+        , asTree "d" []
+        ]
+
+
+deepTree_c =
+    asTree "c"
+        [ asTree "d" [] ]
+
+
+deepTree_b =
+    asTree "b"
+        [ deepTree_c
         ]
 
 
 deepTree =
-    Tree "a"
-        [ Tree "b"
-            [ Tree "c"
-                [ Tree "d" [] ]
-            ]
+    asTree "a"
+        [ deepTree_b
         ]
 
 
 simpleForest =
-    [ (Tree "x" [])
-    , (Tree "y" [])
-    , (Tree "z" [])
+    asForest [ asTree "x" []
+    , asTree "y" []
+    , asTree "z" []
     ]
+

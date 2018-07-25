@@ -1,8 +1,10 @@
 module Test.UpdateTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import DictTree exposing (Tree(..))
+import DictTree exposing (Tree(..), singular)
+import Dict
 import DictTreeZipper exposing (..)
+import Test.Utils exposing (asTree)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -21,38 +23,31 @@ tests =
     suite "Update"
         [ test "Update datum (simple)" <|
             assertEqual
-                (Just ( (Tree "ax" []), [] ))
-                (Just ( noChildTree, [] )
-                    &> updateDatum (\a -> a ++ "x")
+                (asZipper <| asTree "ax" [])
+                (asZipper noChildTree
+                    |> updateDatum (\a -> a ++ "x")
                 )
         , test "Update datum (record)" <|
             assertEqual
-                (Just ( (Tree { selected = True, expanded = False } []), [] ))
-                (Just ( noChildRecord, [] )
-                    &> updateDatum (\rec -> { rec | selected = True })
+                ( asZipper <| singular { selected = True, expanded = False } )
+                ( asZipper noChildRecord
+                    |> updateDatum (\rec -> { rec | selected = True })
                 )
         , test "Replace datum (simple)" <|
             assertEqual
-                (Just ( (Tree "x" []), [] ))
-                (Just ( noChildTree, [] )
-                    &> replaceDatum "x"
-                )
+                ( asZipper <| asTree "x" [])
+                ( asZipper noChildTree |> replaceDatum "x" )
         , test "Replace datum (record)" <|
             assertEqual
-                (Just ( (Tree { selected = True, expanded = True } []), [] ))
-                (Just ( noChildRecord, [] )
-                    &> replaceDatum { selected = True, expanded = True }
+                (asZipper <| singular { selected = True, expanded = True })
+                (asZipper noChildRecord |> replaceDatum { selected = True, expanded = True }
                 )
         , test "Replace children (replace with empty)" <|
             assertEqual
-                (Just ( noChildTree, [] ))
-                (Just ( singleChildTree, [] )
-                    &> updateChildren []
-                )
+                (asZipper noChildTree)
+                (asZipper singleChildTree |> updateChildren Dict.empty)
         , test "Replace children (replace with specific)" <|
             assertEqual
-                (Just ( Tree "a" simpleForest, [] ))
-                (Just ( interestingTree, [] )
-                    &> updateChildren simpleForest
-                )
+                (Tree "a" simpleForest |> asZipper)
+                (interestingTree |> asZipper |> updateChildren simpleForest)
         ]

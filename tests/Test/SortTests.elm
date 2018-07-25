@@ -1,7 +1,10 @@
 module Test.SortTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import DictTree exposing (Tree(..))
+import DictTree exposing (Tree(..), sortBy, sortWith, datum)
+import MultiwayTree as T
+import Test.Utils exposing (asTree)
+import Tuple exposing (second)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -13,47 +16,59 @@ import Test.SampleData
         )
 
 
-unorderedTree : Tree String
-unorderedTree =
-    Tree "a"
-        [ Tree "c"
-            [ Tree "g" []
-            , Tree "f" []
-            ]
-        , Tree "b"
-            [ Tree "e"
-                [ Tree "k" [] ]
-            ]
-        , Tree "d"
-            [ Tree "i" []
-            , Tree "h" []
-            , Tree "j" []
-            ]
-        ]
-
-
-reverseSortedTree : Tree String
+reverseSortedTree : T.Tree String
 reverseSortedTree =
-    Tree "a"
-        [ Tree "d"
-            [ Tree "j" []
-            , Tree "i" []
-            , Tree "h" []
+    T.Tree "a"
+        [ T.Tree "d"
+            [ T.Tree "j" []
+            , T.Tree "i" []
+            , T.Tree "h" []
             ]
-        , Tree "c"
-            [ Tree "g" []
-            , Tree "f" []
+        , T.Tree "c"
+            [ T.Tree "g" []
+            , T.Tree "f" []
             ]
-        , Tree "b"
-            [ Tree "e"
-                [ Tree "k" [] ]
+        , T.Tree "b"
+            [ T.Tree "e"
+                [ T.Tree "k" [] ]
             ]
         ]
 
 
-flippedComparison : comparable -> comparable -> Order
+sortedTree : T.Tree String
+sortedTree =
+    T.Tree "a"
+        [ T.Tree "b"
+            [ T.Tree "e"
+                [ T.Tree "k" [] ]
+            ]
+        , T.Tree "c"
+            [ T.Tree "f" []
+            , T.Tree "g" []
+            ]
+        , T.Tree "d"
+            [ T.Tree "h" []
+            , T.Tree "i" []
+            , T.Tree "j" []
+            ]
+        ]
+
+myDeepTree : T.Tree String
+myDeepTree =
+    T.Tree "a"
+        [ T.Tree "b"
+            [ T.Tree "c"
+                [ T.Tree "d" [] ]
+            ]
+        ]
+
+type alias Seq comparable b =
+    ( comparable, Tree comparable b)
+
+
+flippedComparison : Seq comparable b -> Seq comparable b -> Order
 flippedComparison a b =
-    case compare a b of
+    case compare (Tuple.first a) (Tuple.first b) of
         LT ->
             GT
 
@@ -63,20 +78,17 @@ flippedComparison a b =
         GT ->
             LT
 
-
 tests : Test
 tests =
     suite "Sort"
-        [ test "Sorting a Tree with only one child per levels yields the same Tree" <|
-            assertEqual deepTree
-                (DictTree.sortBy identity deepTree)
+        [
+          test "Sorting a Tree with only one child per levels yields the same Tree" <|
+            assertEqual myDeepTree
+                (sortBy (\x -> second x |> datum ) deepTree)
         , test "Sorting a sorted Tree returns the same Tree" <|
-            assertEqual interestingTree
-                (DictTree.sortBy identity interestingTree)
-        , test "Sorting an unsorted Tree returns a sorted Tree" <|
-            assertEqual interestingTree
-                (DictTree.sortBy identity unorderedTree)
+            assertEqual sortedTree
+                (sortBy (\x -> second x |> datum ) interestingTree)
         , test "Sorting with a Tree with a reversed comperator reverse-sorts a Tree" <|
             assertEqual reverseSortedTree
-                (DictTree.sortWith flippedComparison interestingTree)
+                (sortWith flippedComparison interestingTree)
         ]

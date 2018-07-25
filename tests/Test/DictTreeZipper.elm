@@ -7,11 +7,8 @@ import Test.FlattenTests
 import Test.FoldTests
 import Test.FilterTests
 import Test.FilterWithChildPrecedenceTests
-import Test.AppendTests
-import Test.InsertTests
+import Test.AddTests
 import Test.LengthTests
-import Test.IndexedMapTests
-import Test.TuplesOfDatumAndFlatChildrenTests
 import Test.SortTests
 
 
@@ -24,10 +21,7 @@ tests =
         , Test.FoldTests.tests
         , Test.FilterTests.tests
         , Test.FilterWithChildPrecedenceTests.tests
-        , Test.AppendTests.tests
-        , Test.InsertTests.tests
+        , Test.AddTests.tests
         , Test.LengthTests.tests
-        , Test.IndexedMapTests.tests
-        , Test.TuplesOfDatumAndFlatChildrenTests.tests
         , Test.SortTests.tests
         ]

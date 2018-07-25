@@ -3,14 +3,16 @@ module DictTreeZipper
         ( Context(..)
         , Breadcrumbs
         , Zipper
+        , asZipper
         , goToChild
-        , goToRightMostChild
+        , goToSibling
+        -- , goToRightMostChild
         , goUp
-        , goLeft
-        , goRight
+        -- , goLeft
+        -- , goRight
         , goToRoot
-        , goToNext
-        , goToPrevious
+        -- , goToNext
+        -- , goToPrevious
         , goTo
         , updateDatum
         , replaceDatum
@@ -41,26 +43,24 @@ Zipper fashion.
 [The Zipper, Gerard Huet](https://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf)
 [Learn You A Haskell, Zippers, Miran Lipovaca](http://learnyouahaskell.com/zippers)
 
-# Future work
-Might be able to integrate existing [Rose Tree](http://package.elm-lang.org/packages/TheSeamau5/elm-rosetree) to work with the Zipper.
-Wanted the first version to be self contained.
-
 -}
 
 -- TODO: Add more documentation
 
 import List
 import Maybe exposing (Maybe(..))
-import DictTree exposing (Tree(..), Forest, children, addChild)
+import DictTree exposing (Tree(..), Forest, children, datum, addChild)
+import Dict exposing (Dict(..))
+
+(&>) = flip Maybe.andThen
 
 
 {-| The necessary information needed to reconstruct a DictTree as it is
-navigated with a Zipper. This context includes the datum that was at the
-previous node, a list of children that came before the node, and a list of
-children that came after the node.
+navigated with a Zipper. This context consists of the key at which the
+current node is to be stored and the parent dict it's to be stored in.
 -}
-type Context a
-    = Context a (List (Tree a)) (List (Tree a))
+type Context comparable b
+    = Context comparable (Tree comparable b)
 
 
 {-| A list of Contexts that is contructed as a DictTree is navigated.
@@ -69,50 +69,32 @@ of focus. As the tree is navigated, the needed Context is pushed onto the list
 Breadcrumbs, and they are maintained in the reverse order in which they are
 visited
 -}
-type alias Breadcrumbs a =
-    List (Context a)
+type alias Breadcrumbs comparable b =
+    List (Context comparable b)
 
 
 {-| A structure to keep track of the current Tree, as well as the Breadcrumbs to
 allow us to continue navigation through the rest of the tree.
 -}
-type alias Zipper a =
-    ( Tree a, Breadcrumbs a )
+type alias Zipper a b =
+    ( Tree a b, Breadcrumbs a b )
 
-
-{-| Separate a list into three groups. This function is unique to DictTree
-needs. In order to navigate to children of any Tree, a way to break the children
-into pieces is needed.
-
-The pieces are:
-* before: The list of children that come before the desired child
-* focus: The desired child Tree
-* after: The list of children that come after the desired child
-
-These pieces help create a Context, which assist the Zipper
+{-| Create a zipper for a tree
 -}
-splitOnIndex : Int -> List (Tree a) -> Maybe ( List (Tree a), Tree a, List (Tree a) )
-splitOnIndex n xs =
-    let
-        before =
-            List.take n xs
 
-        focus =
-            List.drop n xs |> List.head
+asZipper : Tree comparable b -> Zipper comparable b
+asZipper tree =
+    (tree, [])
 
-        after =
-            List.drop (n + 1) xs
-    in
-        case focus of
-            Nothing ->
-                Nothing
+{-| Extract a tree from its zipper
+-}
 
-            Just f ->
-                Just ( before, f, after )
-
+asTree : Zipper comparable b -> Tree comparable b
+asTree (tree, zipper) =
+    tree
 
 {-| Move up relative to the current Zipper focus. This allows navigation from a
-child to it's parent.
+child to its parent.
 
     (&>) = flip Maybe.andThen
 
@@ -127,18 +109,18 @@ child to it's parent.
         &> goToChild 0
         &> goUp
 -}
-goUp : Zipper a -> Maybe (Zipper a)
+goUp : Zipper comparable b -> Maybe (Zipper comparable b)
 goUp ( tree, breadcrumbs ) =
     case breadcrumbs of
-        (Context datum before after) :: bs ->
-            Just ( Tree datum (before ++ [ tree ] ++ after), bs )
+        (Context key (Tree datum_ siblings)) :: bs ->
+            Just ( Tree datum_ <| Dict.insert key tree siblings, bs )
 
         [] ->
             Nothing
 
 
 {-| Move down relative to the current Zipper focus. This allows navigation from
-a parent to it's children.
+a parent to one specific child.
 
     (&>) = flip Maybe.andThen
 
@@ -150,188 +132,42 @@ a parent to it's children.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 1
+        &> goToChild "c"
 -}
-goToChild : Int -> Zipper a -> Maybe (Zipper a)
-goToChild n ( Tree datum children, breadcrumbs ) =
+goToChild : comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
+goToChild key ( tree, breadcrumbs ) =
     let
-        maybeSplit =
-            splitOnIndex n children
+        not_key = 
+            (\(k, v) -> k /= key)
     in
-        case maybeSplit of
+        case Dict.get key <| children tree of
             Nothing ->
                 Nothing
 
-            Just ( before, focus, after ) ->
-                Just ( focus, (Context datum before after) :: breadcrumbs )
+            Just tree_ ->
+                Just ( tree_, (Context key tree) :: breadcrumbs )
 
 
-{-| Move down and as far right as possible relative to the current Zipper focus.
-This allows navigation from a parent to it's last child.
-
-    (&>) = flip Maybe.andThen
-
-    simpleTree =
-        Tree "a"
-            [ Tree "b" []
-            , Tree "c" []
-            , Tree "d" []
-            ]
-
-    Just (simpleTree, [])
-        &> goToRightMostChild
--}
-goToRightMostChild : Zipper a -> Maybe (Zipper a)
-goToRightMostChild ( Tree datum children, breadcrumbs ) =
-    goToChild ((List.length children) - 1) ( Tree datum children, breadcrumbs )
-
-
-{-| Move left relative to the current Zipper focus. This allows navigation from
-a child to it's previous sibling.
+{-| Move to an adjacent Zipper focus. This allows navigation from
+a child to one of its siblings.
 
     (&>) = flip Maybe.andThen
 
     simpleTree =
-        Tree "a"
-            [ Tree "b" []
-            , Tree "c" []
-            , Tree "d" []
+        asTree "a"
+            [ asTree "b" []
+            , asTree "c" []
+            , asTree "d" []
             ]
 
     Just (simpleTree, [])
-        &> goToChild 1
-        &> goLeft
+        &> goToChild "Vc"
+        &> goToSibling "Vb"
 -}
-goLeft : Zipper a -> Maybe (Zipper a)
-goLeft ( tree, breadcrumbs ) =
-    case breadcrumbs of
-        [] ->
-            Nothing
-
-        (Context datum before after) :: bs ->
-            case List.reverse before of
-                [] ->
-                    Nothing
-
-                tree_ :: rest ->
-                    Just ( tree_, (Context datum (List.reverse rest) (tree :: after)) :: bs )
-
-
-{-| Move right relative to the current Zipper focus. This allows navigation from
-a child to it's next sibling.
-
-    (&>) = flip Maybe.andThen
-
-    simpleTree =
-        Tree "a"
-            [ Tree "b" []
-            , Tree "c" []
-            , Tree "d" []
-            ]
-
-    Just (simpleTree, [])
-        &> goToChild 1
-        &> goRight
--}
-goRight : Zipper a -> Maybe (Zipper a)
-goRight ( tree, breadcrumbs ) =
-    case breadcrumbs of
-        (Context datum before after) :: bs ->
-            case after of
-                [] ->
-                    Nothing
-
-                (Tree nextDatum nextChildren) :: rest ->
-                    Just ( (Tree nextDatum nextChildren), (Context datum (before ++ [ tree ]) rest) :: bs )
-
-        [] ->
-            Nothing
-
-
-{-| Moves to the previous node in the hierarchy, depth-first.
-
-    (&>) = flip Maybe.andThen
-
-    simpleTree =
-        Tree "a"
-            [ Tree "b" []
-            , Tree "c" []
-            , Tree "d" []
-            ]
-
-    Just (simpleTree, [])
-        &> goToChild 2
-        &> goToPrevious
-        &> goToPrevious
--}
-goToPrevious : Zipper a -> Maybe (Zipper a)
-goToPrevious zipper =
-    let
-        recurseDownAndRight zipper_ =
-            case goToRightMostChild zipper_ of
-                Just zipper__ ->
-                    recurseDownAndRight zipper__
-
-                Nothing ->
-                    Just zipper_
-    in
-        case goLeft zipper of
-            Just zipper_ ->
-                recurseDownAndRight zipper_
-
-            Nothing ->
-                goUp zipper
-
-
-{-| Moves to the next node in the hierarchy, depth-first. If already
-  at the end, stays there.
-
-    (&>) = flip Maybe.andThen
-
-    simpleTree =
-        Tree "a"
-            [ Tree "b" []
-            , Tree "c" []
-            , Tree "d" []
-            ]
-
-    Just (simpleTree, [])
-        &> goToNext
-        &> goToNext
--}
-goToNext : Zipper a -> Maybe (Zipper a)
-goToNext zipper =
-    let
-        upAndOver zipper =
-            case goUp zipper of
-                Nothing ->
-                    Nothing
-
-                Just zipper_ ->
-                    case goRight zipper_ of
-                        Nothing ->
-                            upAndOver zipper_
-
-                        zipper__ ->
-                            zipper__
-    in
-        case goToChild 0 zipper of
-            Just zipper_ ->
-                Just zipper_
-
-            Nothing ->
-                case goRight zipper of
-                    Just zipper_ ->
-                        Just zipper_
-
-                    Nothing ->
-                        case upAndOver zipper of
-                            Nothing ->
-                                Nothing
-
-                            zipper_ ->
-                                zipper_
-
+goToSibling : comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
+goToSibling key zipper =
+    goUp zipper &> goToChild key
+    -- XXX this can be more efficient, but whatever
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
 any part of the tree back to the root.
@@ -339,19 +175,19 @@ any part of the tree back to the root.
     (&>) = flip Maybe.andThen
 
     simpleTree =
-        Tree "a"
-            [ Tree "b"
-                [ Tree "e" [] ]
-            , Tree "c" []
-            , Tree "d" []
+        asTree "a"
+            [ asTree "b"
+                [ asTree "e" [] ]
+            , asTree "c" []
+            , asTree "d" []
             ]
 
     Just (simpleTree, [])
-        &> goToChild 0
-        &> goToChild 1
+        &> goToChild "Vb"
+        &> goToChild "Ve"
         &> goToRoot
 -}
-goToRoot : Zipper a -> Maybe (Zipper a)
+goToRoot : Zipper comparable b -> Maybe (Zipper comparable b)
 goToRoot ( tree, breadcrumbs ) =
     case breadcrumbs of
         [] ->
@@ -361,13 +197,31 @@ goToRoot ( tree, breadcrumbs ) =
             goUp ( tree, breadcrumbs ) |> Maybe.andThen goToRoot
 
 
+goToFirst : (b -> Bool) -> List comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
+goToFirst predicate keys zipper =
+    case keys of
+        [] ->
+            Nothing
+        key :: rest ->
+            let
+                result = 
+                    goToChild key zipper &> goTo predicate 
+            in
+                case result of
+                    Nothing ->
+                        goToFirst predicate rest zipper
+                    Just res ->
+                        Just res
+        
+
 {-| Move the focus to the first element for which the predicate is True. If no
-such element exists returns Nothing. Starts searching at the root of the tree.
+such element exists returns Nothing. Search proceeds depth-first.
+root of the tree.
 
     (&>) = flip Maybe.andThen
 
     simpleTree =
-        Tree "a"
+        asTree "a"
             [ Tree "b"
                 [ Tree "e" [] ]
             , Tree "c" []
@@ -377,16 +231,13 @@ such element exists returns Nothing. Starts searching at the root of the tree.
     Just (simpleTree, [])
         &> goTo (\elem -> elem == "e")
 -}
-goTo : (a -> Bool) -> Zipper a -> Maybe (Zipper a)
+
+goTo : (b -> Bool) -> Zipper comparable b -> Maybe (Zipper comparable b)
 goTo predicate zipper =
-    let
-        goToElementOrNext ( Tree datum children, breadcrumbs ) =
-            if predicate datum then
-                Just ( Tree datum children, breadcrumbs )
-            else
-                goToNext ( Tree datum children, breadcrumbs ) |> Maybe.andThen goToElementOrNext
-    in
-        (goToRoot zipper) |> Maybe.andThen goToElementOrNext
+        if predicate <| datum zipper then
+            Just zipper
+        else
+            goToFirst predicate (Dict.keys <| children <| Tuple.first zipper) zipper
 
 
 {-| Update the datum at the current Zipper focus. This allows changes to be made
@@ -407,9 +258,9 @@ to a part of a node's datum information, given the previous state of the node.
         &> updateDatum (\old -> old ++ "X") -- Appends an X to "b"
         &> goToRoot
 -}
-updateDatum : (a -> a) -> Zipper a -> Maybe (Zipper a)
+updateDatum : (b -> b) -> Zipper comparable b -> Zipper comparable b
 updateDatum fn ( Tree datum children, breadcrumbs ) =
-    Just ( Tree (fn datum) children, breadcrumbs )
+    ( Tree (fn datum) children, breadcrumbs )
 
 
 {-| Replace the datum at the current Zipper focus. This allows complete
@@ -431,35 +282,35 @@ node.
         &> replaceDatum "X" -- Replaces "b" with "X"
         &> goToRoot
 -}
-replaceDatum : a -> Zipper a -> Maybe (Zipper a)
+replaceDatum : b -> Zipper comparable b -> Zipper comparable b
 replaceDatum newDatum =
     updateDatum (\_ -> newDatum)
 
 
 {-| Fully replace the children at the current Zipper focus.
 -}
-updateChildren : Forest a -> Zipper a -> Maybe (Zipper a)
+updateChildren : Dict comparable (Tree comparable b) -> Zipper comparable b -> Zipper comparable b
 updateChildren newChildren ( Tree datum children, breadcrumbs ) =
-    Just ( Tree datum newChildren, breadcrumbs )
+    ( Tree datum newChildren, breadcrumbs )
 
 
 {-| Inserts a Tree as a new child of the Tree at the current focus. Does not move the focus.
 -}
-addChild : Tree a -> Zipper a -> Maybe (Zipper a)
-addChild child ( tree, breadcrumbs ) =
-    Just ( DictTree.addChild child tree, breadcrumbs )
+addChild : comparable -> Tree comparable b -> Zipper comparable b -> Zipper comparable b
+addChild key child ( tree, breadcrumbs ) =
+    ( DictTree.addChild key child tree, breadcrumbs )
 
 
 {-| Access the datum at the current Zipper focus.
 -}
-datum : Zipper a -> a
+datum : Zipper comparable b -> b
 datum ( tree, breadcrumbs ) =
     DictTree.datum tree
 
 
 {-| Access the datum at the current Zipper focus as a Maybe.
 -}
-maybeDatum : Zipper a -> Maybe a
+maybeDatum : Zipper comparable b -> Maybe b
 maybeDatum zipper =
     datum zipper
         |> Just
