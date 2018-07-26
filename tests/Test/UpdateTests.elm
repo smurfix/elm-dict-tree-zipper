@@ -4,7 +4,7 @@ import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..), singular)
 import Dict
 import DictTree.Zipper exposing (..)
-import Test.Utils exposing (asTree)
+import Test.Utils exposing (makeTree)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -23,7 +23,7 @@ tests =
     suite "Update"
         [ test "Update datum (simple)" <|
             assertEqual
-                (asZipper <| asTree "ax" [])
+                (asZipper <| makeTree "ax" [])
                 (asZipper noChildTree
                     |> updateDatum (\a -> a ++ "x")
                 )
@@ -35,7 +35,7 @@ tests =
                 )
         , test "Replace datum (simple)" <|
             assertEqual
-                (asZipper <| asTree "x" [])
+                (asZipper <| makeTree "x" [])
                 (asZipper noChildTree |> replaceDatum "x")
         , test "Replace datum (record)" <|
             assertEqual

@@ -2,7 +2,7 @@ module Test.FilterWithChildPrecedenceTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..))
-import Test.Utils exposing (asTree)
+import Test.Utils exposing (makeTree)
 import DictTree.Zipper exposing (..)
 import Test.SampleData
     exposing
@@ -30,10 +30,10 @@ tests =
         , test "If a predicate evaluates to False for a Node but True for one of it's children then the Node will remain in the Tree" <|
             assertEqual
                 (Just
-                    (asTree "a"
-                        [ asTree "b"
-                            [ asTree "e"
-                                [ asTree "k" [] ]
+                    (makeTree "a"
+                        [ makeTree "b"
+                            [ makeTree "e"
+                                [ makeTree "k" [] ]
                             ]
                         ]
                     )

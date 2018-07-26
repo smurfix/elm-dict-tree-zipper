@@ -3,7 +3,7 @@ module Test.AddTests exposing (..)
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..))
 import DictTree.Zipper exposing (..)
-import Test.Utils exposing (asTree)
+import Test.Utils exposing (makeTree)
 import Test.SampleData
     exposing
         ( noChildTree
@@ -33,18 +33,18 @@ tests =
             assertEqual (Just ( interestingTree, [] ))
                 (Just ( multiChildTree, [] )
                     &> goToChild "_b"
-                    &&> addChild "_e" (asTree "e" [])
+                    &&> addChild "_e" (makeTree "e" [])
                     &> goToChild "_e"
-                    &&> addChild "_k" (asTree "k" [])
+                    &&> addChild "_k" (makeTree "k" [])
                     &> goUp
                     &> goUp
                     &> goToChild "_c"
-                    &&> addChild "_f" (asTree "f" [])
-                    &&> addChild "_g" (asTree "g" [])
+                    &&> addChild "_f" (makeTree "f" [])
+                    &&> addChild "_g" (makeTree "g" [])
                     &> goToSibling "_d"
-                    &&> addChild "_h" (asTree "h" [])
-                    &&> addChild "_i" (asTree "i" [])
-                    &&> addChild "_j" (asTree "j" [])
+                    &&> addChild "_h" (makeTree "h" [])
+                    &&> addChild "_i" (makeTree "i" [])
+                    &&> addChild "_j" (makeTree "j" [])
                     &> goToRoot
                 )
         ]

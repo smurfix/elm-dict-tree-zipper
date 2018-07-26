@@ -35,6 +35,6 @@ asForest list =
     Dict.fromList <| List.map conv list
 
 
-asTree : String -> List (Tree String String) -> Tree String String
-asTree datum children =
+makeTree : String -> List (Tree String String) -> Tree String String
+makeTree datum children =
     Tree datum <| asForest children

@@ -3,7 +3,7 @@ module Test.SortTests exposing (..)
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..), sortBy, sortWith, datum)
 import MultiwayTree as T
-import Test.Utils exposing (asTree)
+import Test.Utils exposing (makeTree)
 import Tuple exposing (second)
 import Test.SampleData
     exposing

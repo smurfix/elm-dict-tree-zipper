@@ -7,25 +7,25 @@ import Test.Utils exposing (..)
 
 interestingTree : Tree String String
 interestingTree =
-    asTree "a"
-        [ asTree "b"
-            [ asTree "e"
-                [ asTree "k" [] ]
+    makeTree "a"
+        [ makeTree "b"
+            [ makeTree "e"
+                [ makeTree "k" [] ]
             ]
-        , asTree "c"
-            [ asTree "f" []
-            , asTree "g" []
+        , makeTree "c"
+            [ makeTree "f" []
+            , makeTree "g" []
             ]
-        , asTree "d"
-            [ asTree "h" []
-            , asTree "i" []
-            , asTree "j" []
+        , makeTree "d"
+            [ makeTree "h" []
+            , makeTree "i" []
+            , makeTree "j" []
             ]
         ]
 
 
 noChildTree =
-    asTree "a" []
+    makeTree "a" []
 
 
 noChildRecord =
@@ -33,38 +33,38 @@ noChildRecord =
 
 
 singleChildTree =
-    asTree "a"
-        [ asTree "b" [] ]
+    makeTree "a"
+        [ makeTree "b" [] ]
 
 
 multiChildTree =
-    asTree "a"
-        [ asTree "b" []
-        , asTree "c" []
-        , asTree "d" []
+    makeTree "a"
+        [ makeTree "b" []
+        , makeTree "c" []
+        , makeTree "d" []
         ]
 
 
 deepTree_c =
-    asTree "c"
-        [ asTree "d" [] ]
+    makeTree "c"
+        [ makeTree "d" [] ]
 
 
 deepTree_b =
-    asTree "b"
+    makeTree "b"
         [ deepTree_c
         ]
 
 
 deepTree =
-    asTree "a"
+    makeTree "a"
         [ deepTree_b
         ]
 
 
 simpleForest =
     asForest
-        [ asTree "x" []
-        , asTree "y" []
-        , asTree "z" []
+        [ makeTree "x" []
+        , makeTree "y" []
+        , makeTree "z" []
         ]

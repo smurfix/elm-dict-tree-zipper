@@ -4,6 +4,7 @@ module DictTree.Zipper
         , Breadcrumbs
         , Zipper
         , asZipper
+        , asTree
         , goToChild
         , goToPath
         , goToSibling
@@ -40,7 +41,7 @@ Zipper fashion.
 
 # Access API
 
-@docs datum, maybeDatum
+@docs datum, maybeDatum, asTree
 
 
 # References

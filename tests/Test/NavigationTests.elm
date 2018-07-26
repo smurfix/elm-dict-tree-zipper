@@ -20,14 +20,14 @@ tests : Test
 tests =
     suite "Navigation"
         [ test "Navigate to child (only child)" <|
-            assertEqual (Just ( (asTree "b" []), [ Context "_b" singleChildTree ] ))
+            assertEqual (Just ( (makeTree "b" []), [ Context "_b" singleChildTree ] ))
                 (Just ( singleChildTree, [] )
                     &> goToChild "_b"
                 )
         , test "Navigate to child (one of many)" <|
             assertEqual
                 (Just
-                    ( (asTree "b" [])
+                    ( (makeTree "b" [])
                     , [ Context "_b" multiChildTree
                       ]
                     )
@@ -38,7 +38,7 @@ tests =
         , test "Navigate to a child (deep)" <|
             assertEqual
                 (Just
-                    ( (asTree "d" [])
+                    ( (makeTree "d" [])
                     , [ Context "_d" deepTree_c
                       , Context "_c" deepTree_b
                       , Context "_b" deepTree
@@ -48,20 +48,27 @@ tests =
                 (Just ( deepTree, [] )
                     &> goToPath [ "_b", "_c", "_d" ]
                 )
+        , test "Navigate to a child (deep) 2" <|
+            assertEqual
+                (Just (makeTree "d" []))
+                (Just ( deepTree, [] )
+                    &> goToPath [ "_b", "_c", "_d" ]
+                    &&> asTree
+                )
         , test "Navigate up (single level)" <|
-            assertEqual (Just ( (asTree "a" [ asTree "b" [] ]), [] ))
+            assertEqual (Just ( (makeTree "a" [ makeTree "b" [] ]), [] ))
                 (Just ( singleChildTree, [] )
                     &> goToChild "_b"
                     &> goUp
                 )
         , test "Navigate up (single level with many children)" <|
-            assertEqual (Just ( (asTree "a" [ asTree "b" [], asTree "c" [], asTree "d" [] ]), [] ))
+            assertEqual (Just ( (makeTree "a" [ makeTree "b" [], makeTree "c" [], makeTree "d" [] ]), [] ))
                 (Just ( multiChildTree, [] )
                     &> goToChild "_b"
                     &> goUp
                 )
         , test "Navigate up from a child (deep)" <|
-            assertEqual (Just ( (asTree "a" [ asTree "b" [ asTree "c" [ asTree "d" [] ] ] ]), [] ))
+            assertEqual (Just ( (makeTree "a" [ makeTree "b" [ makeTree "c" [ makeTree "d" [] ] ] ]), [] ))
                 (Just ( deepTree, [] )
                     &> goToChild "_b"
                     &> goToChild "_c"
