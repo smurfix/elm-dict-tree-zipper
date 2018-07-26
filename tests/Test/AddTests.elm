@@ -15,13 +15,16 @@ import Test.SampleData
         )
 import Test.Utils exposing (..)
 
+
 plus1 : number -> number
 plus1 x =
     x + 1
 
-foo : (Maybe number) -> (Maybe number)
-foo x = 
+
+foo : Maybe number -> Maybe number
+foo x =
     x &> Just &&> plus1 &> Just
+
 
 tests : Test
 tests =

@@ -17,7 +17,7 @@ import Test.SampleData
 tests : Test
 tests =
     suite "Fold"
-        [ test "Foldl interestingTree into List"
-            <| assertEqual (DictTree.flatten interestingTree)
+        [ test "Foldl interestingTree into List" <|
+            assertEqual (DictTree.flatten interestingTree)
                 ((DictTree.foldl (::) [] interestingTree) |> List.reverse)
         ]

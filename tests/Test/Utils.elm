@@ -5,7 +5,8 @@ import DictTree exposing (Tree(..), Forest)
 
 
 (&>) : Maybe a -> (a -> Maybe b) -> Maybe b
-(&>) = flip Maybe.andThen
+(&>) =
+    flip Maybe.andThen
 
 
 (&&>) : Maybe a -> (a -> b) -> Maybe b
@@ -13,17 +14,20 @@ import DictTree exposing (Tree(..), Forest)
     case x of
         Just v ->
             f v |> Just
+
         Nothing ->
             Nothing
 
 
 infixl 0 &>
+
+
 infixl 0 &&>
 
 
-conv : Tree String String -> (String, Tree String String)
+conv : Tree String String -> ( String, Tree String String )
 conv (Tree datum children) =
-    ("_" ++ datum, Tree datum children)
+    ( "_" ++ datum, Tree datum children )
 
 
 asForest : List (Tree String String) -> Forest String String
@@ -31,7 +35,6 @@ asForest list =
     Dict.fromList <| List.map conv list
 
 
-asTree : String -> List ( Tree String String ) -> Tree String String
+asTree : String -> List (Tree String String) -> Tree String String
 asTree datum children =
     Tree datum <| asForest children
-

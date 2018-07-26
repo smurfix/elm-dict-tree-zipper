@@ -17,13 +17,13 @@ import Test.SampleData
 tests : Test
 tests =
     suite "Flatten"
-        [ test "Flatten multiChildTree"
-            <| assertEqual [ "a", "b", "c", "d" ]
+        [ test "Flatten multiChildTree" <|
+            assertEqual [ "a", "b", "c", "d" ]
                 (DictTree.flatten multiChildTree)
-        , test "Flatten deepTree"
-            <| assertEqual [ "a", "b", "c", "d" ]
+        , test "Flatten deepTree" <|
+            assertEqual [ "a", "b", "c", "d" ]
                 (DictTree.flatten deepTree)
-        , test "Flatten interestingTree"
-            <| assertEqual [ "a", "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ]
+        , test "Flatten interestingTree" <|
+            assertEqual [ "a", "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ]
                 (DictTree.flatten interestingTree)
         ]

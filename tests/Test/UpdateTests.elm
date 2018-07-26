@@ -29,19 +29,18 @@ tests =
                 )
         , test "Update datum (record)" <|
             assertEqual
-                ( asZipper <| singular { selected = True, expanded = False } )
-                ( asZipper noChildRecord
+                (asZipper <| singular { selected = True, expanded = False })
+                (asZipper noChildRecord
                     |> updateDatum (\rec -> { rec | selected = True })
                 )
         , test "Replace datum (simple)" <|
             assertEqual
-                ( asZipper <| asTree "x" [])
-                ( asZipper noChildTree |> replaceDatum "x" )
+                (asZipper <| asTree "x" [])
+                (asZipper noChildTree |> replaceDatum "x")
         , test "Replace datum (record)" <|
             assertEqual
                 (asZipper <| singular { selected = True, expanded = True })
-                (asZipper noChildRecord |> replaceDatum { selected = True, expanded = True }
-                )
+                (asZipper noChildRecord |> replaceDatum { selected = True, expanded = True })
         , test "Replace children (replace with empty)" <|
             assertEqual
                 (asZipper noChildTree)

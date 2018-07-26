@@ -2,8 +2,8 @@ module Test.SampleData exposing (..)
 
 import Dict exposing (Dict(..))
 import DictTree exposing (Tree(..), Forest)
-
 import Test.Utils exposing (..)
+
 
 interestingTree : Tree String String
 interestingTree =
@@ -63,8 +63,8 @@ deepTree =
 
 
 simpleForest =
-    asForest [ asTree "x" []
-    , asTree "y" []
-    , asTree "z" []
-    ]
-
+    asForest
+        [ asTree "x" []
+        , asTree "y" []
+        , asTree "z" []
+        ]

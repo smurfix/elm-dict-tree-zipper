@@ -53,6 +53,7 @@ sortedTree =
             ]
         ]
 
+
 myDeepTree : T.Tree String
 myDeepTree =
     T.Tree "a"
@@ -62,8 +63,9 @@ myDeepTree =
             ]
         ]
 
+
 type alias Seq comparable b =
-    ( comparable, Tree comparable b)
+    ( comparable, Tree comparable b )
 
 
 flippedComparison : Seq comparable b -> Seq comparable b -> Order
@@ -78,16 +80,16 @@ flippedComparison a b =
         GT ->
             LT
 
+
 tests : Test
 tests =
     suite "Sort"
-        [
-          test "Sorting a Tree with only one child per levels yields the same Tree" <|
+        [ test "Sorting a Tree with only one child per levels yields the same Tree" <|
             assertEqual myDeepTree
-                (sortBy (\x -> second x |> datum ) deepTree)
+                (sortBy (\x -> second x |> datum) deepTree)
         , test "Sorting a sorted Tree returns the same Tree" <|
             assertEqual sortedTree
-                (sortBy (\x -> second x |> datum ) interestingTree)
+                (sortBy (\x -> second x |> datum) interestingTree)
         , test "Sorting with a Tree with a reversed comperator reverse-sorts a Tree" <|
             assertEqual reverseSortedTree
                 (sortWith flippedComparison interestingTree)

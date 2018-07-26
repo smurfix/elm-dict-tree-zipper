@@ -22,20 +22,29 @@ module DictTreeZipper
 the tree must have the same type. The trees are implemented in a Huet
 Zipper fashion.
 
+
 # Types
+
 @docs Context, Breadcrumbs, Zipper
 
+
 # Navigation API
+
 @docs goToChild, goToPath, goUp, goToRoot, goTo
 
+
 # Update API
+
 @docs updateDatum, replaceDatum, addChild, updateChildren
 
+
 # Access API
+
 @docs datum, maybeDatum
 
 
 # References
+
 [The Zipper, Gerard Huet](https://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf)
 [Learn You A Haskell, Zippers, Miran Lipovaca](http://learnyouahaskell.com/zippers)
 
@@ -48,7 +57,9 @@ import Maybe exposing (Maybe(..))
 import DictTree exposing (Tree(..), Forest, children, datum, addChild)
 import Dict exposing (Dict(..))
 
-(&>) = flip Maybe.andThen
+
+(&>) =
+    flip Maybe.andThen
 
 
 {-| The necessary information needed to reconstruct a DictTree as it is
@@ -75,19 +86,20 @@ allow us to continue navigation through the rest of the tree.
 type alias Zipper a b =
     ( Tree a b, Breadcrumbs a b )
 
+
 {-| Create a zipper for a tree
 -}
-
 asZipper : Tree comparable b -> Zipper comparable b
 asZipper tree =
-    (tree, [])
+    ( tree, [] )
+
 
 {-| Extract a tree from its zipper
 -}
-
 asTree : Zipper comparable b -> Tree comparable b
-asTree (tree, zipper) =
+asTree ( tree, zipper ) =
     tree
+
 
 {-| Move up relative to the current Zipper focus. This allows navigation from a
 child to its parent.
@@ -104,6 +116,7 @@ child to its parent.
     Just (asZipper simpleTree)
         &> goToChild "_b"
         &> goUp
+
 -}
 goUp : Zipper comparable b -> Maybe (Zipper comparable b)
 goUp ( tree, breadcrumbs ) =
@@ -129,12 +142,13 @@ a parent to one specific child.
 
     Just (simpleTree, [])
         &> goToChild "c"
+
 -}
 goToChild : comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
 goToChild key ( tree, breadcrumbs ) =
     let
-        not_key = 
-            (\(k, v) -> k /= key)
+        not_key =
+            (\( k, v ) -> k /= key)
     in
         case Dict.get key <| children tree of
             Nothing ->
@@ -160,12 +174,14 @@ a parent to one specific child.
 
     Just (simpleTree, [])
         &> goToPath ["b","c","d"]
+
 -}
 goToPath : List comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
 goToPath keys zipper =
     case keys of
         [] ->
             Just zipper
+
         key :: rest ->
             let
                 next =
@@ -174,6 +190,7 @@ goToPath keys zipper =
                 case next of
                     Nothing ->
                         Nothing
+
                     Just child ->
                         goToPath rest child
 
@@ -193,11 +210,16 @@ a child to one of its siblings.
     Just (simpleTree, [])
         &> goToChild "Vc"
         &> goToSibling "Vb"
+
 -}
 goToSibling : comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
 goToSibling key zipper =
     goUp zipper &> goToChild key
-    -- XXX this can be more efficient, but whatever
+
+
+
+-- XXX this can be more efficient, but whatever
+
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
 any part of the tree back to the root.
@@ -216,6 +238,7 @@ any part of the tree back to the root.
         &> goToChild "Vb"
         &> goToChild "Ve"
         &> goToRoot
+
 -}
 goToRoot : Zipper comparable b -> Maybe (Zipper comparable b)
 goToRoot ( tree, breadcrumbs ) =
@@ -232,14 +255,16 @@ goToFirst predicate keys zipper =
     case keys of
         [] ->
             Nothing
+
         key :: rest ->
             let
-                result = 
-                    goToChild key zipper &> goTo predicate 
+                result =
+                    goToChild key zipper &> goTo predicate
             in
                 case result of
                     Nothing ->
                         goToFirst predicate rest zipper
+
                     Just res ->
                         Just res
 
@@ -260,14 +285,14 @@ root of the tree.
 
     Just (simpleTree, [])
         &> goTo (\elem -> elem == "e")
--}
 
+-}
 goTo : (b -> Bool) -> Zipper comparable b -> Maybe (Zipper comparable b)
 goTo predicate zipper =
-        if predicate <| datum zipper then
-            Just zipper
-        else
-            goToFirst predicate (Dict.keys <| children <| Tuple.first zipper) zipper
+    if predicate <| datum zipper then
+        Just zipper
+    else
+        goToFirst predicate (Dict.keys <| children <| Tuple.first zipper) zipper
 
 
 {-| Update the datum at the current Zipper focus. This allows changes to be made
@@ -287,6 +312,7 @@ to a part of a node's datum information, given the previous state of the node.
         &> goToChild 0
         &> updateDatum (\old -> old ++ "X") -- Appends an X to "b"
         &> goToRoot
+
 -}
 updateDatum : (b -> b) -> Zipper comparable b -> Zipper comparable b
 updateDatum fn ( Tree datum children, breadcrumbs ) =
@@ -311,6 +337,7 @@ node.
         &> goToChild 0
         &> replaceDatum "X" -- Replaces "b" with "X"
         &> goToRoot
+
 -}
 replaceDatum : b -> Zipper comparable b -> Zipper comparable b
 replaceDatum newDatum =

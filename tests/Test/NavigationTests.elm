@@ -3,15 +3,16 @@ module Test.NavigationTests exposing (..)
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..), get, getPath)
 import DictTreeZipper exposing (..)
-import Test.SampleData exposing
-    ( singleChildTree
-    , multiChildTree
-    , deepTree
-    , deepTree_b
-    , deepTree_c
-    , noChildTree
-    , interestingTree
-    )
+import Test.SampleData
+    exposing
+        ( singleChildTree
+        , multiChildTree
+        , deepTree
+        , deepTree_b
+        , deepTree_c
+        , noChildTree
+        , interestingTree
+        )
 import Test.Utils exposing (..)
 
 
@@ -45,7 +46,7 @@ tests =
                     )
                 )
                 (Just ( deepTree, [] )
-                    &> goToPath ["_b", "_c", "_d"]
+                    &> goToPath [ "_b", "_c", "_d" ]
                 )
         , test "Navigate up (single level)" <|
             assertEqual (Just ( (asTree "a" [ asTree "b" [] ]), [] ))
