@@ -43,18 +43,19 @@ tests =
         [ test "adding children can turn a multiChildTree into an interestingTree" <|
             assertEqual (Just ( interestingTree, [] ))
                 (Just ( multiChildTree, [] )
-                    &> goToChild "Vb"
-                    &>> addChild "Ve" (asTree "e" [])
-                    &> goToChild "Ve"
-                    &>> addChild "Vk" (asTree "k" [])
+                    &> goToChild "_b"
+                    &>> addChild "_e" (asTree "e" [])
+                    &> goToChild "_e"
+                    &>> addChild "_k" (asTree "k" [])
                     &> goUp
-                    &> goToChild "Vc"
-                    &>> addChild "Vf" (asTree "f" [])
-                    &>> addChild "Vg" (asTree "g" [])
-                    &> goToSibling "Vd"
-                    &>> addChild "Vh" (asTree "h" [])
-                    &>> addChild "Vi" (asTree "i" [])
-                    &>> addChild "Vj" (asTree "j" [])
+                    &> goUp
+                    &> goToChild "_c"
+                    &>> addChild "_f" (asTree "f" [])
+                    &>> addChild "_g" (asTree "g" [])
+                    &> goToSibling "_d"
+                    &>> addChild "_h" (asTree "h" [])
+                    &>> addChild "_i" (asTree "i" [])
+                    &>> addChild "_j" (asTree "j" [])
                     &> goToRoot
                 )
         ]

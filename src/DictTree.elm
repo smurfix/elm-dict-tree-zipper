@@ -262,8 +262,14 @@ filter_ predicate datum children =
 filterWithChildPrecedence : (b -> Bool) -> Tree comparable b -> Maybe (Tree comparable b)
 filterWithChildPrecedence predicate (Tree datum children) =
     let
-        subfilter = (\k (Tree datum v) -> predicate datum)
-        filtered = Dict.filter subfilter children
+        subfilter = (\k tree acc ->
+            case filterWithChildPrecedence predicate tree of
+                Just tree_ ->
+                    Dict.insert k tree_ acc
+                Nothing ->
+                    acc
+            )
+        filtered = Dict.foldl subfilter Dict.empty children
     in
         if Dict.isEmpty filtered then 
             if predicate datum then
@@ -272,7 +278,7 @@ filterWithChildPrecedence predicate (Tree datum children) =
                 Nothing
 
         else
-            Just (Tree datum children)
+            Just (Tree datum filtered)
 
 
 {-| Sort values by a derived property. Does not alter the nesting structure of

@@ -7,7 +7,7 @@ import DictTree exposing (Tree(..), Forest)
 
 conv : Tree String String -> (String, Tree String String)
 conv (Tree datum children) =
-    (datum, Tree ("V" ++ datum) children)
+    ("_" ++ datum, Tree datum children)
 
 asForest : List (Tree String String) -> Forest String String
 asForest list =

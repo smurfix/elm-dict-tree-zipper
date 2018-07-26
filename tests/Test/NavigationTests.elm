@@ -19,35 +19,35 @@ tests : Test
 tests =
     suite "Navigation"
         [ test "Navigate to child (only child)" <|
-            assertEqual (Just ( (asTree "b" []), [ Context "a" singleChildTree ] ))
+            assertEqual (Just ( (asTree "b" []), [ Context "_b" singleChildTree ] ))
                 (Just ( singleChildTree, [] )
-                    &> goToChild "a"
+                    &> goToChild "_b"
                 )
         , test "Navigate to child (one of many)" <|
             assertEqual
                 (Just
-                    ( (asTree "c" [])
-                    , [ Context "b" multiChildTree
+                    ( (asTree "b" [])
+                    , [ Context "_b" multiChildTree
                       ]
                     )
                 )
                 (Just ( multiChildTree, [] )
-                    &> goToChild "b"
+                    &> goToChild "_b"
                 )
         , test "Navigate to a child (deep)" <|
             assertEqual
                 (Just
                     ( (asTree "d" [])
-                    , [ Context "c" deepTree_c
-                      , Context "b" deepTree_b
-                      , Context "a" deepTree
+                    , [ Context "_d" deepTree_c
+                      , Context "_c" deepTree_b
+                      , Context "_b" deepTree
                       ]
                     )
                 )
                 (Just ( deepTree, [] )
-                    &> goToChild "a"
-                    &> goToChild "b"
-                    &> goToChild "c"
+                    &> goToChild "_b"
+                    &> goToChild "_c"
+                    &> goToChild "_d"
                 )
 --        , test "Navigate to last child of an empty tree returns Nothing" <|
 --            assertEqual Nothing
@@ -83,21 +83,21 @@ tests =
         , test "Navigate up (single level)" <|
             assertEqual (Just ( (asTree "a" [ asTree "b" [] ]), [] ))
                 (Just ( singleChildTree, [] )
-                    &> goToChild "a"
+                    &> goToChild "_b"
                     &> goUp
                 )
         , test "Navigate up (single level with many children)" <|
             assertEqual (Just ( (asTree "a" [ asTree "b" [], asTree "c" [], asTree "d" [] ]), [] ))
                 (Just ( multiChildTree, [] )
-                    &> goToChild "b"
+                    &> goToChild "_b"
                     &> goUp
                 )
         , test "Navigate up from a child (deep)" <|
             assertEqual (Just ( (asTree "a" [ asTree "b" [ asTree "c" [ asTree "d" [] ] ] ]), [] ))
                 (Just ( deepTree, [] )
-                    &> goToChild "a"
-                    &> goToChild "b"
-                    &> goToChild "c"
+                    &> goToChild "_b"
+                    &> goToChild "_c"
+                    &> goToChild "_d"
                     &> goUp
                     &> goUp
                     &> goUp
@@ -105,8 +105,8 @@ tests =
         , test "Navigate beyond the tree (only child)" <|
             assertEqual Nothing
                 (Just ( singleChildTree, [] )
-                    &> goToChild "a"
-                    &> goToChild "z"
+                    &> goToChild "_a"
+                    &> goToChild "_z"
                 )
         , test "Navigate beyond the tree (up past root)" <|
             assertEqual Nothing
@@ -153,7 +153,7 @@ tests =
 --            assertEqual
 --                (Just
 --                    ( (asTree "c" [])
---                    , [ Context "a"
+--                    , [ Context "_a"
 --                            [ (asTree "b" []) ]
 --                            [ (asTree "d" []) ]
 --                      ]
@@ -293,8 +293,8 @@ tests =
         , test "Trying to find an existing element in a Tree moves the focus to this element" <|
             assertEqual
                 (Just ( interestingTree, [] )
-                    &> goToChild "d"
-                    &> goToChild "h"
+                    &> goToChild "_d"
+                    &> goToChild "_h"
                 )
                 (Just ( interestingTree, [] )
                     &> goTo (\elem -> elem == "h")
