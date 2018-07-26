@@ -3,7 +3,7 @@ module Test.UpdateTests exposing (..)
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..), singular)
 import Dict
-import DictTreeZipper exposing (..)
+import DictTree.Zipper exposing (..)
 import Test.Utils exposing (asTree)
 import Test.SampleData
     exposing

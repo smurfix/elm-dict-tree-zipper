@@ -1,4 +1,4 @@
-module DictTreeZipper
+module DictTree.Zipper
     exposing
         ( Context(..)
         , Breadcrumbs

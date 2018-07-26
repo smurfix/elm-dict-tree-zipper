@@ -2,7 +2,7 @@ module Test.NavigationTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..), get, getPath, singular)
-import DictTreeZipper exposing (..)
+import DictTree.Zipper exposing (..)
 import Test.SampleData
     exposing
         ( singleChildTree

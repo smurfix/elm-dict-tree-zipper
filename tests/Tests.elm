@@ -1,13 +1,13 @@
 module Tests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import Test.DictTreeZipper as DictTreeZipper
+import Test.DictTreeZipper as DTZ
 
 
 all : Test
 all =
-    suite "Elm DictTreeZipper Tests"
-        [ DictTreeZipper.tests
+    suite "Elm DictTree.Zipper Tests"
+        [ DTZ.tests
         ]
 
 

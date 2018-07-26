@@ -2,7 +2,7 @@ module Test.FlattenTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..))
-import DictTreeZipper exposing (..)
+import DictTree.Zipper exposing (..)
 import Test.SampleData
     exposing
         ( noChildTree

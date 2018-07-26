@@ -14,7 +14,7 @@ import Test.SortTests
 
 tests : Test
 tests =
-    suite "DictTreeZipper"
+    suite "DictTree.Zipper"
         [ Test.NavigationTests.tests
         , Test.UpdateTests.tests
         , Test.FlattenTests.tests

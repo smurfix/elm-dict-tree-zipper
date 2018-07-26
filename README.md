@@ -1,4 +1,4 @@
-# DictTreeZipper
+# DictTree.Zipper
 
 This library was created with the goal of allowing a dict-based tree to be
 navigated and updated.

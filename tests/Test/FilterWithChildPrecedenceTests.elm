@@ -3,7 +3,7 @@ module Test.FilterWithChildPrecedenceTests exposing (..)
 import Legacy.ElmTest as ElmTest exposing (..)
 import DictTree exposing (Tree(..))
 import Test.Utils exposing (asTree)
-import DictTreeZipper exposing (..)
+import DictTree.Zipper exposing (..)
 import Test.SampleData
     exposing
         ( noChildTree
