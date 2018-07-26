@@ -5,6 +5,7 @@ module DictTreeZipper
         , Zipper
         , asZipper
         , goToChild
+        , goToPath
         , goToSibling
         -- , goToRightMostChild
         , goUp
@@ -30,7 +31,7 @@ Zipper fashion.
 @docs Context, Breadcrumbs, Zipper
 
 # Navigation API
-@docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
+@docs goToChild, goToPath, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
 
 # Update API
 @docs updateDatum, replaceDatum, addChild, updateChildren
@@ -99,14 +100,14 @@ child to its parent.
     (&>) = flip Maybe.andThen
 
     simpleTree =
-        Tree "a"
-            [ Tree "b" []
-            , Tree "c" []
-            , Tree "d" []
+        Tree "a" <| Dict.fromList
+            [ ("b", singular "b")
+            , ("c", singular "c")
+            , ("d", singular "d")
             ]
 
-    Just (simpleTree, [])
-        &> goToChild 0
+    Just (asZipper simpleTree)
+        &> goToChild "_b"
         &> goUp
 -}
 goUp : Zipper comparable b -> Maybe (Zipper comparable b)
@@ -146,6 +147,40 @@ goToChild key ( tree, breadcrumbs ) =
 
             Just tree_ ->
                 Just ( tree_, (Context key tree) :: breadcrumbs )
+
+
+{-| Move down relative to the current Zipper focus. This allows navigation from
+a parent to one specific child.
+
+    (&>) = flip Maybe.andThen
+
+    simpleTree =
+        Tree "a" <| Dict.fromList [
+            ("b", Tree "bb" <| Dict.fromList [
+                ("c", Tree "cc" <| Dict.fromList [
+                    ("d", singular "dd")
+                ])
+            ])
+        ]
+
+    Just (simpleTree, [])
+        &> goToPath ["b","c","d"]
+-}
+goToPath : List comparable -> Zipper comparable b -> Maybe (Zipper comparable b)
+goToPath keys zipper =
+    case keys of
+        [] ->
+            Just zipper
+        key :: rest ->
+            let
+                next =
+                    goToChild key zipper
+            in
+                case next of
+                    Nothing ->
+                        Nothing
+                    Just child ->
+                        goToPath rest child
 
 
 {-| Move to an adjacent Zipper focus. This allows navigation from

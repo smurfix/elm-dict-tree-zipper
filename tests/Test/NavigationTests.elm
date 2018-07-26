@@ -45,9 +45,7 @@ tests =
                     )
                 )
                 (Just ( deepTree, [] )
-                    &> goToChild "_b"
-                    &> goToChild "_c"
-                    &> goToChild "_d"
+                    &> goToPath ["_b", "_c", "_d"]
                 )
 --        , test "Navigate to last child of an empty tree returns Nothing" <|
 --            assertEqual Nothing
