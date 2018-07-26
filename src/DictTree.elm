@@ -30,7 +30,7 @@ information, it's datum and children.
 
 # Operations
 
-@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, length, addChild
+@docs singular, datum, children, get, getPath, foldl, foldr, flatten, filter, filterWithChildPrecedence, length, addChild
 
 
 # Mapping

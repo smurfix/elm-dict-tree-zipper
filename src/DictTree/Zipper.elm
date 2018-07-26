@@ -25,12 +25,12 @@ Zipper fashion.
 
 # Types
 
-@docs Context, Breadcrumbs, Zipper
+@docs Context, Breadcrumbs, Zipper, asZipper
 
 
 # Navigation API
 
-@docs goToChild, goToPath, goUp, goToRoot, goTo
+@docs goToChild, goToSibling, goToPath, goUp, goToRoot, goTo
 
 
 # Update API
