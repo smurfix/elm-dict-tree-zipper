@@ -1,5 +1,5 @@
 {
-    "version": "2.1.0",
+    "version": "1.0.0",
     "summary": "A library for navigating and updating immutable trees.",
     "repository": "https://github.com/smurfix/elm-dict-tree-zipper.git",
     "license": "BSD3",
