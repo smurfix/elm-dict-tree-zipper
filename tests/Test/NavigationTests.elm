@@ -1,7 +1,7 @@
 module Test.NavigationTests exposing (..)
 
 import Legacy.ElmTest as ElmTest exposing (..)
-import DictTree exposing (Tree(..), get, getPath)
+import DictTree exposing (Tree(..), get, getPath, singular)
 import DictTreeZipper exposing (..)
 import Test.SampleData
     exposing
@@ -95,4 +95,32 @@ tests =
                 (Just ( interestingTree, [] )
                     &> goTo (\elem -> elem == "h")
                 )
+        , test "Go to a subdir" <|
+            assertEqual
+                (get "_b" singleChildTree)
+                (Just <| singular "b")
+        , test "Go to a deeper subdir" <|
+            assertEqual
+                (deepTree |> get "_b" &> get "_c")
+                (Just deepTree_c)
+        , test "Go directly to a deeper subdir" <|
+            assertEqual
+                (getPath [ "_b", "_c" ] deepTree)
+                (Just deepTree_c)
+        , test "stay home" <|
+            assertEqual
+                (getPath [] deepTree)
+                (Just deepTree)
+        , test "Go nowhere" <|
+            assertEqual
+                (get "duh" deepTree)
+                (Nothing)
+        , test "Go nowhere A" <|
+            assertEqual
+                (getPath [ "duh", "_c" ] deepTree)
+                (Nothing)
+        , test "Go nowhere B" <|
+            assertEqual
+                (getPath [ "_b", "duh" ] deepTree)
+                (Nothing)
         ]
