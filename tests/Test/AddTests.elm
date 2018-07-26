@@ -15,27 +15,13 @@ import Test.SampleData
         )
 import Test.Utils exposing (..)
 
-infixl 0 &>>
-infixl 0 &>
-
-(&>) : Maybe a -> (a -> Maybe b) -> Maybe b
-(&>) = flip Maybe.andThen
-
-(&>>) : Maybe a -> (a -> b) -> Maybe b
-(&>>) x f =
-    case x of
-        Just v ->
-            f v |> Just
-        Nothing ->
-            Nothing
-
 plus1 : number -> number
 plus1 x =
     x + 1
 
 foo : (Maybe number) -> (Maybe number)
 foo x = 
-    x &> Just &>> plus1 &> Just
+    x &> Just &&> plus1 &> Just
 
 tests : Test
 tests =
@@ -44,18 +30,18 @@ tests =
             assertEqual (Just ( interestingTree, [] ))
                 (Just ( multiChildTree, [] )
                     &> goToChild "_b"
-                    &>> addChild "_e" (asTree "e" [])
+                    &&> addChild "_e" (asTree "e" [])
                     &> goToChild "_e"
-                    &>> addChild "_k" (asTree "k" [])
+                    &&> addChild "_k" (asTree "k" [])
                     &> goUp
                     &> goUp
                     &> goToChild "_c"
-                    &>> addChild "_f" (asTree "f" [])
-                    &>> addChild "_g" (asTree "g" [])
+                    &&> addChild "_f" (asTree "f" [])
+                    &&> addChild "_g" (asTree "g" [])
                     &> goToSibling "_d"
-                    &>> addChild "_h" (asTree "h" [])
-                    &>> addChild "_i" (asTree "i" [])
-                    &>> addChild "_j" (asTree "j" [])
+                    &&> addChild "_h" (asTree "h" [])
+                    &&> addChild "_i" (asTree "i" [])
+                    &&> addChild "_j" (asTree "j" [])
                     &> goToRoot
                 )
         ]
