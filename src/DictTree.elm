@@ -8,12 +8,9 @@ module DictTree
         , map
         , get
         , getPath
-        -- , mapListOverTree
-        -- , indexedMap
         , filter
         , filterWithChildPrecedence
         , flatten
-        -- , tuplesOfDatumAndFlatChildren
         , foldr
         , foldl
         , length
@@ -30,10 +27,10 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children, foldl, foldr, flatten, tuplesOfDatumAndFlatChildren, filter, filterWithChildPrecedence, length, addChild
+@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, length, addChild
 
 # Mapping
-@docs map, mapListOverTree, indexedMap
+@docs map
 
 # Sorting
 @docs sortBy, sortWith
@@ -134,21 +131,6 @@ flatten tree =
     foldr (::) [] tree
 
 
--- {-| A special version of flatten which flattens a Tree into a List of Tuples like (element, [all elements in subtree])
--- 
---     (Tree.tuplesOfDatumAndFlatChildren
---         Tree "a"
---             Dict.fromList([("bk", Tree "b" Dict.empty
---             ),("ck", Tree "c" Dict.empty
---             ),("dk", Tree "d" Dict.empty
---             )])
---     == [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
--- -}
--- tuplesOfDatumAndFlatChildren : Tree comparable b -> List ( b, List b )
--- tuplesOfDatumAndFlatChildren (Tree datum children) =
---     [ ( datum, List.concatMap flatten (Dict.values children) ) ] ++ (List.concatMap tuplesOfDatumAndFlatChildren children)
--- 
-
 {-| Return the length of the Tree. Calculated recusively as datum (1) + length of children (n)
     Since a DictTree is never empty this function will never return Int < 1.
 -}
@@ -169,64 +151,6 @@ map fn (Tree datum children) =
             Dict.map (\key val -> map fn val) children
     in
         (Tree mappedDatum mappedChildren)
-
--- 
--- {-| Map a Function over a List and a DictTree.
--- -}
--- mapListOverTree : (a -> b -> result) -> List a -> Tree b -> Maybe (Tree result)
--- mapListOverTree fn list (Tree datum children) =
---     case list of
---         [] ->
---             Nothing
--- 
---         head :: [] ->
---             let
---                 mappedDatum =
---                     fn head datum
---             in
---                 Just (Tree mappedDatum Dict.empty)
--- 
---         head :: rest ->
---             let
---                 mappedDatum =
---                     fn head datum
--- 
---                 listGroupedByLengthOfChildren =
---                     splitByLength (List.map length children) rest
--- 
---                 mappedChildren =
---                     List.map2 (\l child -> mapListOverTree fn l child) listGroupedByLengthOfChildren children
---                         |> List.filterMap identity
---             in
---                 Just (Tree mappedDatum mappedChildren)
--- 
--- 
--- splitByLength : List Int -> List a -> List (List a)
--- splitByLength listOflengths list =
---     splitByLength_ listOflengths list []
--- 
--- 
--- splitByLength_ : List Int -> List a -> List (List a) -> List (List a)
--- splitByLength_ listOflengths list accu =
---     case listOflengths of
---         [] ->
---             List.reverse accu
--- 
---         currentLength :: restLengths ->
---             case list of
---                 [] ->
---                     List.reverse accu
--- 
---                 head :: rest ->
---                     splitByLength_ restLengths (List.drop currentLength list) ((List.take currentLength list) :: accu)
--- 
--- 
--- {-| Same as map but the function is also applied to the index of each element (starting at zero).
--- -}
--- indexedMap : (Int -> a -> b) -> Tree comparable -> Maybe (Tree b)
--- indexedMap f tree =
---     mapListOverTree f (List.range 0 (length tree - 1)) tree
--- 
 
 {-| Filter the DictTree. Keep only elements whose datum satisfy the predicate.
 -}

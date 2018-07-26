@@ -7,13 +7,8 @@ module DictTreeZipper
         , goToChild
         , goToPath
         , goToSibling
-        -- , goToRightMostChild
         , goUp
-        -- , goLeft
-        -- , goRight
         , goToRoot
-        -- , goToNext
-        -- , goToPrevious
         , goTo
         , updateDatum
         , replaceDatum
@@ -31,7 +26,7 @@ Zipper fashion.
 @docs Context, Breadcrumbs, Zipper
 
 # Navigation API
-@docs goToChild, goToPath, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
+@docs goToChild, goToPath, goUp, goToRoot, goTo
 
 # Update API
 @docs updateDatum, replaceDatum, addChild, updateChildren
@@ -247,7 +242,7 @@ goToFirst predicate keys zipper =
                         goToFirst predicate rest zipper
                     Just res ->
                         Just res
-        
+
 
 {-| Move the focus to the first element for which the predicate is True. If no
 such element exists returns Nothing. Search proceeds depth-first.
