@@ -1,5 +1,5 @@
 {
-    "version": "2.0.1",
+    "version": "2.0.2",
     "summary": "A library for navigating and updating hierarchical dictionaries.",
     "repository": "https://github.com/smurfix/elm-dict-tree-zipper.git",
     "license": "BSD3",

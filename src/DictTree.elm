@@ -106,8 +106,8 @@ getPath keys tree =
 {-| Access the children of the current tree
 -}
 children : Tree comparable b -> Forest comparable b
-children (Tree v children) =
-    children
+children (Tree v children_) =
+    children_
 
 
 {-| Inserts a Tree as one child of another Tree
