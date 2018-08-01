@@ -6,6 +6,8 @@ module DictTree
         , children
         , singular
         , map
+        , mapSorted
+        , mapTree
         , get
         , getPath
         , filter
@@ -35,7 +37,7 @@ information, it's datum and children.
 
 # Mapping
 
-@docs map
+@docs map, mapSorted, mapTree
 
 
 # Sorting
@@ -152,16 +154,30 @@ length tree =
     foldr (\_ accu -> accu + 1) 0 tree
 
 
-{-| Map over the DictTree
+{-| Map over one level of the DictTree, with keys
 -}
-map : (a -> b) -> Tree comparable a -> Tree comparable b
-map fn (Tree datum children) =
+map : ((comparable, Tree comparable a) -> b) -> Forest comparable a -> List b
+map fn children =
+    List.map fn <| Dict.toList children
+
+
+{-| Map over one sorted level of the DictTree, with keys
+-}
+mapSorted : ((comparable, Tree comparable a) -> b) -> ((comparable, Tree comparable a) -> comparable1) -> Forest comparable a -> List b
+mapSorted fn sorter children =
+    List.map fn <| List.sortBy sorter <| Dict.toList children
+
+
+{-| Map over a complete DictTree, mangling every element
+-}
+mapTree : (a -> b) -> Tree comparable a -> Tree comparable b
+mapTree fn (Tree datum children) =
     let
         mappedDatum =
             fn datum
 
         mappedChildren =
-            Dict.map (\key val -> map fn val) children
+            Dict.map (\key val -> mapTree fn val) children
     in
         (Tree mappedDatum mappedChildren)
 
