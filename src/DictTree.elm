@@ -156,14 +156,14 @@ length tree =
 
 {-| Map over one level of the DictTree, with keys
 -}
-map : ((comparable, Tree comparable a) -> b) -> Forest comparable a -> List b
+map : (( comparable, Tree comparable a ) -> b) -> Forest comparable a -> List b
 map fn children =
     List.map fn <| Dict.toList children
 
 
 {-| Map over one sorted level of the DictTree, with keys
 -}
-mapSorted : ((comparable, Tree comparable a) -> b) -> ((comparable, Tree comparable a) -> comparable1) -> Forest comparable a -> List b
+mapSorted : (( comparable, Tree comparable a ) -> b) -> (( comparable, Tree comparable a ) -> comparable1) -> Forest comparable a -> List b
 mapSorted fn sorter children =
     List.map fn <| List.sortBy sorter <| Dict.toList children
 
